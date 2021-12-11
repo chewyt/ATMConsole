@@ -99,29 +99,6 @@ public class BankAccount {
 
     }
 
-    /*
-     * public static boolean createUser(String path, String user,ArrayList<String>
-     * cart){
-     * 
-     * File DBfile = new File(path+"/"+user+".db");
-     * 
-     * try {
-     * if(DBfile.createNewFile()){
-     * System.out.println("Status: DB file created successfully");
-     * return true;
-     * }else{
-     * System.out.println("Status: DB file exists. Load DB file");
-     * loadShoppingCart(path, user, cart);
-     * return false;
-     * }
-     * } catch (IOException e) {
-     * System.out.println("ERROR: File not created");
-     * e.printStackTrace();
-     * return false;
-     * }
-     * }
-     */
-
     // Getters
 
     public String getName() {
@@ -147,6 +124,24 @@ public class BankAccount {
         return this.closingDate;
     }
 
+    public void updateDB() {
+        try {
+            FileWriter fileWriter = new FileWriter((path + "/" + accountNumber + ".db"), false);
+            fileWriter.write(username);
+            fileWriter.append("\n" + name);
+            fileWriter.append("\n" + accountBalance);
+            fileWriter.append("\n" + createDate);
+            for (String i : transactions) {
+                fileWriter.append("\n" + i);
+            }
+            fileWriter.close();
+        } catch (IOException e) {
+            System.out.println("An IO error occurred.");
+            e.printStackTrace();
+        } // overwrites file
+
+    }
+
     // Setters
 
     public boolean deposit(double cash) {
@@ -155,14 +150,15 @@ public class BankAccount {
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
             String formatDateTime = now.format(format);
-            String transactionLine = String.format("deposit $%.2f at %s", cash, formatDateTime);
+            String transactionLine = String.format("Deposited $%.2f at %s", cash, formatDateTime);
             transactions.add(transactionLine);
+            updateDB();
             return true;
         } else if (this.closingDate != null) {
             System.out.println("Account already closed.");
             return false;
         } else {
-            System.out.println("Transaction invalid. Please enter positive amount.");
+            System.out.println("[SERVER] Transaction invalid. Please enter positive amount.");
             return false;
         }
     }
@@ -173,8 +169,9 @@ public class BankAccount {
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
             String formatDateTime = now.format(format);
-            String transactionLine = String.format("withdraw $%.2f at %s", cash, formatDateTime);
+            String transactionLine = String.format("withdrawn $%.2f at %s", cash, formatDateTime);
             transactions.add(transactionLine);
+            updateDB();
             return true;
         } else if (this.closingDate != null) {
             System.out.println("Account already closed.");
@@ -193,11 +190,13 @@ public class BankAccount {
     }
 
     public ArrayList<String> getTransactions() {
-        System.out.println("Transactions");
-        System.out.println("-------------------------------------");
-        for (String i : this.transactions) {
-            System.out.println(i);
-        }
+        /*
+         * System.out.println("Transactions");
+         * System.out.println("-------------------------------------");
+         * for (String i : this.transactions) {
+         * System.out.println(i);
+         * }
+         */
         return this.transactions;
     }
 

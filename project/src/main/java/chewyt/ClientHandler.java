@@ -12,6 +12,10 @@ public class ClientHandler implements Runnable {
     private Socket socket;
     private BufferedReader br;
     private BufferedWriter bw;
+    private DataInputStream in;
+    private DataOutputStream out;
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
     private String username;
     private String password;
     private String bankAccountNo;
@@ -24,11 +28,16 @@ public class ClientHandler implements Runnable {
             this.br = new BufferedReader(
                     new InputStreamReader(socket.getInputStream()));
             this.username = br.readLine();
+            this.in = new DataInputStream(socket.getInputStream()); // for getting float variables from client
+            this.out = new DataOutputStream(socket.getOutputStream()); // for sending float variables to client
+
             System.out.println("[SERVER] Username entered for Socket ID " + socket.getPort() + " : " + username);
             this.password = br.readLine();
             System.out.println("[SERVER] Password entered for Socket ID " + socket.getPort() + " : " + password);
             // Adding client to arraylist, to know how many users are logged in to server
             clienthandlers.add(this);
+            // this.oos = new ObjectOutputStream(socket.getOutputStream());
+            // this.ois = new ObjectInputStream(socket.getInputStream());
 
         } catch (IOException e) {
             closeEverything(socket, br, bw);
@@ -113,9 +122,12 @@ public class ClientHandler implements Runnable {
         try {
             if (userLogin(username, password)) {
                 System.out.println("Bank Account number retrieved for " + username + " : " + bankAccountNo);
-                bw.write("true");
-                bw.newLine();
-                bw.flush();
+                out.writeUTF("true");
+                out.flush();
+
+                // bw.write("true"); Work similarly good
+                // bw.newline();
+                // bw.flush();
 
             } else {
 
@@ -127,7 +139,10 @@ public class ClientHandler implements Runnable {
             }
 
             String input = "";
+            float amount;
             BankAccount bankaccount = new BankAccount(username, bankAccountNo);
+            out.writeUTF(bankaccount.getName());
+            out.flush();
             while (!input.equals("5")) {
 
                 input = br.readLine();
@@ -135,24 +150,31 @@ public class ClientHandler implements Runnable {
 
                 switch (input) {
                     case "1":
-                        System.out.println("[SERVER] Commmand: " + input);// bankaccount.deposit(amount);
-                        System.out.println(bankaccount.getAccNo());
+                        System.out.println("[SERVER] Commmand: " + input + " - DEPOSIT");
+                        amount = in.readFloat();
+                        bankaccount.deposit(amount);
+
                         ;
                         break;
 
                     case "2":
-                        System.out.println("[SERVER] Commmand: " + input);// bankaccount.withdraw(amount);
-                        System.out.println(bankaccount.getcreateDate());
+                        System.out.println("[SERVER] Commmand: " + input + " - WITHDRAW");// bankaccount.withdraw(amount);
+                        amount = in.readFloat();
+                        bankaccount.withdraw(amount);
                         break;
 
                     case "3":
-                        System.out.println("[SERVER] Commmand: " + input);// bankaccount.getTransaction();
-                        System.out.println(bankaccount.getBalance());
+                        System.out.println("[SERVER] Commmand: " + input + " - TRANSACTION");// bankaccount.getTransaction();
+                        ArrayList<String> transactions = bankaccount.getTransactions();
+                        // oos.writeObject(transactions);
+                        // oos.flush();
+
                         break;
 
                     case "4":
-                        System.out.println("[SERVER] Commmand: " + input);// bankaccount.checkBalance();
-                        System.out.println(bankaccount.getName());
+                        System.out.println("[SERVER] Commmand: " + input + " - BALANCE");// bankaccount.checkBalance();
+                        out.writeFloat(bankaccount.getBalance());
+                        out.flush();
                         break;
 
                     case "5":

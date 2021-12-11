@@ -45,7 +45,9 @@ depending on option
 4 > Transaction //print report method >> write to
 
 techincal debt
-prevent third client from entering due to thread limit
+prevent third client from entering due to thread limit: NOw can login but the commands werent heard , thus cannot proceed
 
 create user account in server as main thread
 listening for new client and allow client handler to work as second thread
+
+transaction cannot be retrieved ois oos errror --> check with sir
