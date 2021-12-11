@@ -22,7 +22,7 @@ Server
 username for login if Key exist
 password for login if Value is similar
 
-HashMap ok --> login
+ArrayList instead ok --> login
 
 loop console unless command is closed
 

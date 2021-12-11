@@ -2,7 +2,7 @@ package chewyt;
 
 import java.net.*;
 import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.io.*;
 
 public class ClientHandler implements Runnable {
@@ -109,8 +109,6 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run() {
-        BankAccount bankaccount = new BankAccount(); // making a new bankaccount object for username needs loading of
-                                                     // details from file
 
         try {
             if (userLogin(username, password)) {
@@ -118,6 +116,7 @@ public class ClientHandler implements Runnable {
                 bw.write("true");
                 bw.newLine();
                 bw.flush();
+
             } else {
 
                 System.out.println("Login failed");
@@ -128,6 +127,7 @@ public class ClientHandler implements Runnable {
             }
 
             String input = "";
+            BankAccount bankaccount = new BankAccount(username, bankAccountNo);
             while (!input.equals("5")) {
 
                 input = br.readLine();
@@ -136,18 +136,23 @@ public class ClientHandler implements Runnable {
                 switch (input) {
                     case "1":
                         System.out.println("[SERVER] Commmand: " + input);// bankaccount.deposit(amount);
+                        System.out.println(bankaccount.getAccNo());
+                        ;
                         break;
 
                     case "2":
                         System.out.println("[SERVER] Commmand: " + input);// bankaccount.withdraw(amount);
+                        System.out.println(bankaccount.getcreateDate());
                         break;
 
                     case "3":
                         System.out.println("[SERVER] Commmand: " + input);// bankaccount.getTransaction();
+                        System.out.println(bankaccount.getBalance());
                         break;
 
                     case "4":
                         System.out.println("[SERVER] Commmand: " + input);// bankaccount.checkBalance();
+                        System.out.println(bankaccount.getName());
                         break;
 
                     case "5":
