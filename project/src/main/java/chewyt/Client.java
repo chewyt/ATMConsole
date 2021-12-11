@@ -49,7 +49,6 @@ public class Client {
             System.out.println("Login failed");
         }
 
-        int command = 0;
         String input;
 
         while (socket.isConnected() && isLogin) {
@@ -80,6 +79,7 @@ public class Client {
         socket.close();
         client.br.close();
         client.bw.close();
+        scanner.close();
         System.exit(0);
 
     }
