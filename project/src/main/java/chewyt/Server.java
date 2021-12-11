@@ -2,7 +2,7 @@ package chewyt;
 
 import java.io.*;
 import java.net.*;
-import java.util.HashMap;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -10,10 +10,6 @@ public class Server {
 
     private static final int port = 12345;
     private ServerSocket server;
-    private BufferedReader br;
-    private BufferedWriter bw;
-    private String username;
-    private String password;
 
     // Constructor
     public Server(ServerSocket server) {
@@ -54,20 +50,6 @@ public class Server {
         } catch (IOException i) {
             i.printStackTrace();
         }
-    }
-
-    public void checkCredentials(Socket socket) throws IOException {
-
-        bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        username = br.readLine();
-        // password = br.readLine();
-        System.out.println(username);
-        /*
-         * HashMap<String, String> userAccounts = new HashMap<>();
-         * userAccounts.put(username, password);
-         * System.out.println(userAccounts);
-         */
     }
 
     public static void main(String[] args) throws IOException {
