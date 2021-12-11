@@ -14,6 +14,11 @@ Create Client class
 
 prebuilt --> accounts.txt --> linked to HashMap
 
+Login process:
+Client program start--> Please enter username-->scanner takes data to String variable, make new Client obj, pass string to client obj (this.username = name)
+Running methods from the client obj, flush bw.write(username) to server
+Server
+
 username for login if Key exist
 password for login if Value is similar
 
@@ -38,3 +43,9 @@ depending on option
 2 > Withdraw cash amount : 50,80,100,200,500, others //withdraw method + update balance + Write to fileDB
 3 > Check balance // balance method
 4 > Transaction //print report method >> write to
+
+techincal debt
+prevent third client from entering due to thread limit
+
+create user account in server as main thread
+listening for new client and allow client handler to work as second thread

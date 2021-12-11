@@ -1,0 +1,4 @@
+user,password,bankAccNo
+chewyt,123456,2280563288
+liamgoh,888888,2259056789
+chunhong,111000,2345451104
