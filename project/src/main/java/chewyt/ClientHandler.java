@@ -143,8 +143,13 @@ public class ClientHandler implements Runnable {
                     switch (input) {
                         case "1":
                             System.out.println("[SERVER] Commmand: " + input + " - DEPOSIT");
-                            amount = in.readFloat();
-                            bankaccount.deposit(amount);
+                            try {
+                                amount = in.readFloat();
+                                bankaccount.deposit(amount);
+                            } catch (IllegalArgumentException e) {
+                                System.out.println("Pokemon! Gotta catch them all!");
+                            }
+
                             System.out.println("[SERVER] Deposit of " + amount + " is successful.");
 
                             ;
@@ -152,8 +157,14 @@ public class ClientHandler implements Runnable {
 
                         case "2":
                             System.out.println("[SERVER] Commmand: " + input + " - WITHDRAW");// bankaccount.withdraw(amount);
-                            amount = in.readFloat();
-                            bankaccount.withdraw(amount);
+
+                            try {
+                                amount = in.readFloat();
+                                bankaccount.withdraw(amount);
+                            } catch (IllegalArgumentException e) {
+                                System.out.println("Pokemon! Gotta catch them all!");
+                            }
+
                             break;
 
                         case "3":
