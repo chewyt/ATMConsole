@@ -11,28 +11,24 @@ public class Client {
     private static final String IP = "localhost";
 
     private Socket socket;
-    private BufferedWriter bw;
-    private BufferedReader br;
+    private static BufferedWriter bw;
+    private static BufferedReader br;
     private DataOutputStream out;
     private DataInputStream in;
-    private ObjectOutputStream oos;
-    private ObjectInputStream ois;
     private String username;
 
     public Client(Socket socket, String username, String password) throws IOException {
         this.username = username;
         this.socket = socket;
-        this.br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        this.bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        Client.br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        Client.bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         this.in = new DataInputStream(socket.getInputStream());
         this.out = new DataOutputStream(socket.getOutputStream());
 
-        // this.oos = new ObjectOutputStream(socket.getOutputStream());
-        // this.ois = new ObjectInputStream(socket.getInputStream());
-
     }
 
-    public static void main(String[] args) throws UnknownHostException, IOException, ClassNotFoundException {
+    public static void main(String[] args)
+            throws UnknownHostException, IOException, ClassNotFoundException, EOFException {
 
         boolean isLogin = false;
         String input;
@@ -55,22 +51,26 @@ public class Client {
         // System.out.println("B");
 
         // check login status
-        String loginStatus = client.in.readUTF();
+        String loginStatus = Client.br.readLine();
         // System.out.println(loginStatus);
         if (loginStatus.equals("true")) {
             isLogin = true;
         } else if (loginStatus.equals("false")) {
             isLogin = false;
             System.out.println("Login failed");
+            client.closeEverything(socket, br, bw);
+
         } else {
             isLogin = false;
             System.out.println("Login failed");
+            client.closeEverything(socket, br, bw);
         }
         // System.out.println("C");
         // System.out.println(socket.isConnected());
         // System.out.println(isLogin);
 
         String name = client.in.readUTF();
+
         // Show MENU SCREEN and USER INPUT
         while (socket.isConnected() && isLogin) {
             do {
@@ -80,9 +80,9 @@ public class Client {
 
                 if (input.equals("1") || input.equals("2") || input.equals("3") || input.equals("4")
                         || input.equals("5")) {
-                    client.bw.write(input);
-                    client.bw.newLine();
-                    client.bw.flush();
+                    Client.bw.write(input);
+                    Client.bw.newLine();
+                    Client.bw.flush();
                     System.out.println("[CLIENT] Your command is " + input);
 
                     switch (input) {
@@ -90,6 +90,8 @@ public class Client {
                             System.out.println("Please enter deposit amount");
                             amount = scanner.nextFloat();
                             client.out.writeFloat(amount);
+                            client.out.flush();
+                            scanner.nextLine();
                             System.out.println("Deposit successful! Returning to Main Menu...");
                             break;
 
@@ -98,6 +100,8 @@ public class Client {
                             // System.out.println(bankaccount.getcreateDate());
                             amount = scanner.nextFloat();
                             client.out.writeFloat(amount);
+                            client.out.flush();
+                            scanner.nextLine();
                             System.out.println("Withdrawal successful! Returning to Main Menu...");
                             break;
 
@@ -122,9 +126,9 @@ public class Client {
 
                 } else {
 
-                    client.bw.write(input);
-                    client.bw.newLine();
-                    client.bw.flush();
+                    Client.bw.write(input);
+                    Client.bw.newLine();
+                    Client.bw.flush();
                     System.out.println("[CLIENT] Your command is wrong. Please try again.");
 
                 }
@@ -133,12 +137,6 @@ public class Client {
             System.out.println("Have a nice day! " + name);
             break;
         }
-
-        socket.close();
-        client.br.close();
-        client.bw.close();
-        scanner.close();
-        System.exit(0);
 
     }
 
@@ -149,6 +147,23 @@ public class Client {
         bw.write(password);
         bw.newLine();
         bw.flush();
+    }
+
+    public void closeEverything(Socket socket, BufferedReader br, BufferedWriter bw) throws IOException {
+        try {
+            if (br != null) {
+                br.close();
+            }
+            if (bw != null) {
+                bw.close();
+            }
+            if (socket != null) {
+                socket.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.exit(0);
     }
 
     public static void menuScreen(String user) {
