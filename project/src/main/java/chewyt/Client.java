@@ -106,12 +106,15 @@ public class Client {
                             break;
 
                         case "3":
-                            /*
-                             * ArrayList<String> transaction = (ArrayList) client.ois.readObject();
-                             * for (String i : transaction) {
-                             * System.out.println(i);
-                             * }
-                             */
+
+                            String streamData = Client.br.readLine();
+                            String[] transaction = streamData.split(",");
+                            System.out.println(
+                                    "============================\n\tTRANSACTION\n============================");
+                            for (String i : transaction) {
+                                System.out.println(i);
+                            }
+
                             break;
 
                         case "4":
@@ -167,6 +170,8 @@ public class Client {
     }
 
     public static void menuScreen(String user) {
+        // System.out.print("\033[H\033[2J");
+        // System.out.flush();
         System.out.println("========================================");
         System.out.println("Welcome to your Bank account, " + user);
         System.out.println("========================================");

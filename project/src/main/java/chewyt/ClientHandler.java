@@ -159,9 +159,15 @@ public class ClientHandler implements Runnable {
                         case "3":
                             System.out.println("[SERVER] Commmand: " + input + " - TRANSACTION");// bankaccount.getTransaction();
                             ArrayList<String> transactions = bankaccount.getTransactions();
-                            // oos.writeObject(transactions);
-                            // oos.flush();
-
+                            System.out.println("Size of transaction list: " + transactions.size());
+                            String streamData = "";
+                            for (String string : transactions) {
+                                streamData += string + ",";
+                            }
+                            streamData = streamData.substring(0, streamData.length() - 1);
+                            bw.write(streamData);
+                            bw.newLine();
+                            bw.flush();
                             break;
 
                         case "4":
